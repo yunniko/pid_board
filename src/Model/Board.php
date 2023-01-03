@@ -24,6 +24,8 @@ class Board
         return [
             'buses1' => $this->getSidlisteDepartures(),
             'buses2' => $this->getKrystalovaDepartures(),
+//            'buses3' => $this->getCukrovarDepartures(),
+            'buses4' => $this->getKralovaDepartures(),
             'trains' => $this->getTrainDepartures()
         ];
     }
@@ -78,6 +80,36 @@ class Board
 
             return ($route !== '136');
         });
+        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
+
+        return [
+            'stop' => $name,
+            'departures' => $departures
+        ];
+    }
+
+    private function getKralovaDepartures()
+    {
+        $name = 'Králova';
+
+        $departures = $this->_getRawDepartures($name, [
+            'ids' => ['U293Z2P']
+        ]);
+        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
+
+        return [
+            'stop' => $name,
+            'departures' => $departures
+        ];
+    }
+
+    private function getCukrovarDepartures()
+    {
+        $name = 'Cukrovar Čakovice';
+
+        $departures = $this->_getRawDepartures($name, [
+            'ids' => ['U63Z2P']
+        ]);
         $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
 
         return [

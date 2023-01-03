@@ -1,25 +1,46 @@
-{% for timetable in departures %}
-    <div class='timetable-panel'>
-        <div class='timetable-name'>{{ timetable.stop }}</div>
-        <div class='timetable-content'>
-            {% for transport in timetable.departures %}
-                <div class='timetable-item {{ (transport.departure_predicted_ts < now) ? 'past' : 'future' }}'>
-                    <div class='timetable-item-content'>
-                        <div class='timetable-item-departure'>
-                            {% if transport.departure_scheduled == transport.departure_predicted %}
-                                <b>{{ transport.departure_scheduled }}</b>
-                            {% else %}
-                                <b>{{ transport.departure_predicted }}</b> (sch. {{ transport.departure_scheduled }})
-                            {% endif %}
-                            - <b>{{ transport.route_number }}
-                                - {{ transport.destination }}</b>
-                            {% if transport.train_number %}
-                                ({{ transport.train_number }})
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+{% extends "base.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/board.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/board.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="current-time-container">
+        <div class="current-time">{{ now|date('H:i:s') }}</div>
     </div>
-{% endfor %}
+
+
+    <div class="timetable">
+        {% for timetable in departures %}
+            <div class='timetable-panel'>
+                <div class='timetable-name'>{{ timetable.stop }}</div>
+                <div class='timetable-content'>
+                    {% for transport in timetable.departures %}
+                        <div class='timetable-item {{ (transport.departure_predicted_ts < now) ? 'past' : 'future' }}'>
+                            <div class='timetable-item-content'>
+                                <div class='timetable-item-departure'>
+                                    {% if transport.departure_scheduled == transport.departure_predicted %}
+                                        <b>{{ transport.departure_scheduled }}</b>
+                                    {% else %}
+                                        <b>{{ transport.departure_predicted }}</b> (sch. {{ transport.departure_scheduled }})
+                                    {% endif %}
+                                    - <b>{{ transport.route_number }}</b>
+                                    {{ transport.destination }}
+                                    {% if transport.train_number %}
+                                        ({{ transport.train_number }})
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

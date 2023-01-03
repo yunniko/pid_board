@@ -1,0 +1,10 @@
+<form>
+    <input name="names" value="{{ names|e }}">
+    <input type="submit" value="Search">
+</form>
+{% if( response) %}
+    Response:
+    <pre>
+        {{ response }}
+    </pre>
+{% endif %}
