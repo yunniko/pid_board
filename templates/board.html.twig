@@ -1,19 +1,25 @@
-<div class='timetable-panel'>
-    <div class='timetable-name'>Praha-Čakovice</div>
-    <div class='timetable-content'>
-        {% for train in trains %}
-            <div class='timetable-item {{(train.departure_predicted < now) ? 'past' : 'future'}}'>
-                <div class='timetable-item-content'>
-                    <div class='timetable-item-departure'>
-                    {% if train.departure_scheduled == train.departure_predicted %}
-                        <b>{{train.departure_scheduled}}</b>
-                    {% else %}
-                        <b>{{train.departure_predicted}}</b> (sch. {{train.departure_scheduled}})
-                    {% endif %}
-                     - <b>{{train.destination}}</b> ({{train.route_name}}, {{train.train_number}})
+{% for timetable in departures %}
+    <div class='timetable-panel'>
+        <div class='timetable-name'>{{ timetable.stop }}</div>
+        <div class='timetable-content'>
+            {% for transport in timetable.departures %}
+                <div class='timetable-item {{ (transport.departure_predicted_ts < now) ? 'past' : 'future' }}'>
+                    <div class='timetable-item-content'>
+                        <div class='timetable-item-departure'>
+                            {% if transport.departure_scheduled == transport.departure_predicted %}
+                                <b>{{ transport.departure_scheduled }}</b>
+                            {% else %}
+                                <b>{{ transport.departure_predicted }}</b> (sch. {{ transport.departure_scheduled }})
+                            {% endif %}
+                            - <b>{{ transport.route_number }}
+                                - {{ transport.destination }}</b>
+                            {% if transport.train_number %}
+                                ({{ transport.train_number }})
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
-</div>
+{% endfor %}

@@ -1,38 +1,38 @@
 <?php
+
 namespace App\Model;
 
 use Symfony\Component\HttpClient\HttpClient;
 
 class Board
 {
-    private $api;
     public $settings = [
         'minutesBefore' => 30,
         'minutesAfter' => 180,
         'limit' => 50
     ];
-    public function __construct() {
+
+    private $api;
+
+    public function __construct()
+    {
         $this->api = new PidApi(HttpClient::create([]));
     }
 
-    public function getData() {
+    public function getData()
+    {
         return [
-            /*$this->getSidlisteDepartures(),
-            $this->getKrystalovaDepartures(),*/
+            'buses1' => $this->getSidlisteDepartures(),
+            'buses2' => $this->getKrystalovaDepartures(),
             'trains' => $this->getTrainDepartures()
         ];
     }
-    private function _getRawDepartures($name){
-        $settings = $this->settings;
 
-        /*$time = '2023-01-03T07:00:00+01:00';
-        $settings['timeFrom'] = $time; //TODO: remove!*/
-
+    private function _getRawDepartures($name, $data = [])
+    {
+        $settings = $this->settings + $data;
         $response = $this->api->getDepartures($name, $settings);
-        $departures = array_filter($response->getByKey('departures'), function($item) {
-            $headsign = $item['trip']['headsign'] ?? '';
-            return (mb_strpos($headsign, 'Praha') !== false);
-        });
+        $departures = $response->getByKey('departures');
         $departures = $this->map([
             'arrival_predicted' => 'arrival_timestamp.predicted',
             'arrival_scheduled' => 'arrival_timestamp.scheduled',
@@ -40,39 +40,72 @@ class Board
             'departure_scheduled' => 'departure_timestamp.scheduled',
             'delay' => 'delay.seconds',
             'departure_minutes_left' => 'departure_timestamp.minutes',
-            'route_name' => 'route.short_name',
+            'route_number' => 'route.short_name',
             'destination' => 'trip.headsign',
             'train_number' => 'trip.short_name'
         ], $departures);
-        $departures = $this->convertToTimestring($departures, [
+
+        return $this->processTime($departures, [
             'arrival_predicted',
             'arrival_scheduled',
             'departure_predicted',
             'departure_scheduled'
         ]);
-        $departures = $this->filterByTime($departures, 'departure_predicted');
-        return $departures;
     }
 
-    private function getSidlisteDepartures() {
+    private function getSidlisteDepartures()
+    {
         $name = 'Sídliště Čakovice';
+        $departures = $this->_getRawDepartures($name);
+        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
+
         //TODO: check arrivals for delay
-        return $this->_getRawDepartures($name);
+        return [
+            'stop' => $name,
+            'departures' => $departures
+        ];
     }
 
-    private function getKrystalovaDepartures() {
+    private function getKrystalovaDepartures()
+    {
         $name = 'Krystalová';
-        //TODO: filter 136
-        return $this->_getRawDepartures($name);
+
+        $departures = $this->_getRawDepartures($name, [
+            'ids' => ['U114Z3']
+        ]);
+        $departures = array_filter($departures, function ($item) {
+            $route = $item['route_number'] ?? '';
+
+            return ($route !== '136');
+        });
+        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
+
+        return [
+            'stop' => $name,
+            'departures' => $departures
+        ];
     }
 
-    private function getTrainDepartures() {
+    private function getTrainDepartures()
+    {
         $name = 'Praha-Čakovice';
-        return $this->_getRawDepartures($name);
+        $departures = $this->_getRawDepartures($name);
+        $departures = array_filter($departures, function ($item) {
+            $destination = $item['destination'] ?? '';
+
+            return (mb_strpos($destination, 'Praha') !== false);
+        });
+        $departures = $this->filterByTime($departures, 'departure_predicted_ts');
+
+        return [
+            'stop' => $name,
+            'departures' => $departures
+        ];
     }
 
-    private function map($map, $array) {
-        return array_map(function($item) use($map){
+    private function map($map, $array)
+    {
+        return array_map(function ($item) use ($map) {
             $result = [];
             foreach ($map as $newKey => $oldKey) {
                 $oldKey = explode('.', $oldKey);
@@ -87,32 +120,47 @@ class Board
                 }
                 $result[$newKey] = $current;
             }
+
             return $result;
         }, $array);
     }
 
-    private function convertToTimestring($array, $columns) {
-        foreach($array as $n => $arrayItem) {
+    private function processTime($array, $columns)
+    {
+        foreach ($array as $n => $arrayItem) {
             foreach ($columns as $column) {
-                if (empty($array[$n][$column])) continue;
+                if (empty($array[$n][$column])) {
+                    continue;
+                }
                 $dateTime = new \DateTime($array[$n][$column]);
                 $array[$n][$column] = $dateTime->format('H:i');
+                $array[$n][$column . '_ts'] = $dateTime->getTimestamp();
             }
         }
+
         return $array;
     }
 
-    private function filterByTime($array, $column, $pastCount = 1, $futureCount = 4) {
+    private function filterByTime(
+        $array,
+        $columnTimestamp,
+        $pastCount = 1,
+        $futureCount = 4,
+        $maxTimerangeMinutes = 90
+    ) {
         $past = [];
         $future = [];
-        $now = date('H:i');
+        $now = time();
+        $maxTimerangeSeconds = $maxTimerangeMinutes * 60;
         foreach ($array as $item) {
-            if ($item[$column] < $now) {
+            $itemTime = $item[$columnTimestamp] ?? 0;
+            if ($itemTime < $now && $now - $itemTime < $maxTimerangeSeconds) {
                 $past[] = $item;
-            } else {
+            } else if ($itemTime - $now < $maxTimerangeSeconds) {
                 $future[] = $item;
             }
         }
+
         return array_merge(array_slice($past, $pastCount * -1), array_slice($future, 0, $futureCount));
     }
 }
