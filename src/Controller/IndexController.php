@@ -7,18 +7,18 @@ use App\Model\Board;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class IndexController
+class IndexController extends AbstractController
 {
     public function index(Request $request): Response
     {
         $board = new Board();
-        $responseData = var_export($board->getData(), true);
+        $responseData = $board->getData();
         
-        return new Response(
-            '<pre>' .
-            $responseData
-        );
+        return $this->render('board.html.twig', $responseData + [
+            'now' => date('H:i')
+        ]);
     }
     public function rawStops(Request $request): Response
     {

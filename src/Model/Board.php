@@ -19,7 +19,7 @@ class Board
         return [
             /*$this->getSidlisteDepartures(),
             $this->getKrystalovaDepartures(),*/
-            $this->getTrainDepartures()
+            'trains' => $this->getTrainDepartures()
         ];
     }
     private function _getRawDepartures($name){
@@ -33,7 +33,7 @@ class Board
             $headsign = $item['trip']['headsign'] ?? '';
             return (mb_strpos($headsign, 'Praha') !== false);
         });
-        return $this->map([
+        $departures = $this->map([
             'arrival_predicted' => 'arrival_timestamp.predicted',
             'arrival_scheduled' => 'arrival_timestamp.scheduled',
             'departure_predicted' => 'departure_timestamp.predicted',
@@ -44,6 +44,14 @@ class Board
             'destination' => 'trip.headsign',
             'train_number' => 'trip.short_name'
         ], $departures);
+        $departures = $this->convertToTimestring($departures, [
+            'arrival_predicted',
+            'arrival_scheduled',
+            'departure_predicted',
+            'departure_scheduled'
+        ]);
+        $departures = $this->filterByTime($departures, 'departure_predicted');
+        return $departures;
     }
 
     private function getSidlisteDepartures() {
@@ -81,5 +89,30 @@ class Board
             }
             return $result;
         }, $array);
+    }
+
+    private function convertToTimestring($array, $columns) {
+        foreach($array as $n => $arrayItem) {
+            foreach ($columns as $column) {
+                if (empty($array[$n][$column])) continue;
+                $dateTime = new \DateTime($array[$n][$column]);
+                $array[$n][$column] = $dateTime->format('H:i');
+            }
+        }
+        return $array;
+    }
+
+    private function filterByTime($array, $column, $pastCount = 1, $futureCount = 4) {
+        $past = [];
+        $future = [];
+        $now = date('H:i');
+        foreach ($array as $item) {
+            if ($item[$column] < $now) {
+                $past[] = $item;
+            } else {
+                $future[] = $item;
+            }
+        }
+        return array_merge(array_slice($past, $pastCount * -1), array_slice($future, 0, $futureCount));
     }
 }

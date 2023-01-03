@@ -1,0 +1,19 @@
+<div class='timetable-panel'>
+    <div class='timetable-name'>Praha-Čakovice</div>
+    <div class='timetable-content'>
+        {% for train in trains %}
+            <div class='timetable-item {{(train.departure_predicted < now) ? 'past' : 'future'}}'>
+                <div class='timetable-item-content'>
+                    <div class='timetable-item-departure'>
+                    {% if train.departure_scheduled == train.departure_predicted %}
+                        <b>{{train.departure_scheduled}}</b>
+                    {% else %}
+                        <b>{{train.departure_predicted}}</b> (sch. {{train.departure_scheduled}})
+                    {% endif %}
+                     - <b>{{train.destination}}</b> ({{train.route_name}}, {{train.train_number}})
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
