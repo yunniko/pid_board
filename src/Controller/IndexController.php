@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Model\Board;
 use App\Model\PidApi;
+use App\Model\PIDApi\request\PidApiDeparturesRequest;
+use App\Model\PIDApi\request\PidApiStopsRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +16,33 @@ class IndexController extends AbstractController
     public function index(Request $request): Response
     {
         $board = new Board();
-        $responseData = $board->getData();
+
+        $settings = [
+            'Sídliště Čakovice' => null,
+            'Krystalová' => function ($item) {
+                $route = $item['route_number'] ?? '';
+                $stop = $item['stop_id'] ?? '';
+
+                return ($route !== '136' && $stop === 'U114Z3');
+            },
+            'Praha-Čakovice' => function ($item) {
+                $destination = $item['destination'] ?? '';
+
+                return (mb_strpos($destination, 'Praha') !== false);
+            },
+            'Králova' => function ($item) {
+                $stop = $item['stop_id'] ?? '';
+
+                return ($stop === 'U293Z2P');
+            },
+            'Cukrovar Čakovice' => function ($item) {
+                $stop = $item['stop_id'] ?? '';
+
+                return ($stop === 'U63Z2P');
+            },
+        ];
+
+        $responseData = $board->getData($settings);
 
         return $this->render('board.html.twig', [
             'now' => time(),
@@ -28,7 +56,9 @@ class IndexController extends AbstractController
         $api = new PidApi(HttpClient::create([]));
         $names = $request->query->get('names');
         if (!empty($names)) {
-            $response = $api->getStops(explode(', ', $names));
+            $request = new PidApiStopsRequest();
+            $request->names = explode(', ', $names);
+            $response = $api->get($request);
 
             $responseData = '<pre>' .
                             var_export($response->getByKey('features'), true) .
@@ -49,7 +79,9 @@ class IndexController extends AbstractController
         $api = new PidApi(HttpClient::create([]));
         $names = $request->query->get('names');
         if (!empty($names)) {
-            $response = $api->getDepartures(explode(', ', $names));
+            $request = new PidApiDeparturesRequest();
+            $request->names = explode(', ', $names);
+            $response = $api->get($request);
 
             $responseData = '<pre>' .
                             var_export($response->getByKey('departures'), true) .

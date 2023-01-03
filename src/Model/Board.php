@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\PIDApi\request\PidApiDeparturesRequest;
 use Symfony\Component\HttpClient\HttpClient;
 
 class Board
@@ -9,7 +10,7 @@ class Board
     public $settings = [
         'minutesBefore' => 30,
         'minutesAfter' => 180,
-        'limit' => 50
+        'limit' => 200
     ];
 
     private $api;
@@ -19,21 +20,63 @@ class Board
         $this->api = new PidApi(HttpClient::create([]));
     }
 
-    public function getData()
+    public function getData($settings)
     {
+        $settings = $this->makeSettings($settings);
+        $result = [];
+        foreach ($settings as $name => $data) {
+            $result[] = $this->getDepartures($data);
+        }
+
+        return $result;
+    }
+
+    public function getDepartures($name, $settings = [])
+    {
+        $callback = $settings['callback'] ?? null;
+        $stops = $settings['stops'] ?? null;
+        $data = new PidApiDeparturesRequest($this->settings);
+        if (!empty($stops)) {
+            $data->ids = $stops;
+        }
+        $departures = $this->_getRawDepartures($settings);
+        if ($callback) {
+            $departures = $callback($departures);
+        } else {
+            $departures = $this->filterByTime($departures, 'departure_predicted_ts');
+        }
+
         return [
-            'buses1' => $this->getSidlisteDepartures(),
-            'buses2' => $this->getKrystalovaDepartures(),
-            'trains' => $this->getTrainDepartures(),
-            'buses4' => $this->getKralovaDepartures(),
-            'buses3' => $this->getCukrovarDepartures(),
+            'stop' => $name,
+            'departures' => $departures
         ];
     }
 
-    private function _getRawDepartures($name, $data = [])
+    private function makeSettings($settings = [])
     {
-        $settings = $this->settings + $data;
-        $response = $this->api->getDepartures($name, $settings);
+        $result = [];
+        foreach ($settings as $name => $filter) {
+            $stops = null;
+            if (strpos($name, '|') !== false) {
+                [$name, $stops] = explode('|', $name);
+                $stops = explode(',', $stops);
+            }
+            $result[$name] = [
+                'stops' => $stops,
+                'callback' => function ($departures) use ($filter) {
+                    $departures = array_filter($departures, $filter);
+
+                    return $this->filterByTime($departures, 'departure_predicted_ts');
+                }
+            ];
+        }
+
+        return $result;
+    }
+
+    private function _getRawDepartures(PidApiDeparturesRequest $settings)
+    {
+        $response = $this->api->get($settings);
         $departures = $response->getByKey('departures');
         $departures = $this->map([
             'arrival_predicted' => 'arrival_timestamp.predicted',
@@ -44,7 +87,9 @@ class Board
             'departure_minutes_left' => 'departure_timestamp.minutes',
             'route_number' => 'route.short_name',
             'destination' => 'trip.headsign',
-            'train_number' => 'trip.short_name'
+            'train_number' => 'trip.short_name',
+            'stop_id' => 'stop.id',
+            'last_stop' => 'last_stop.name'
         ], $departures);
 
         return $this->processTime($departures, [
@@ -53,86 +98,6 @@ class Board
             'departure_predicted',
             'departure_scheduled'
         ]);
-    }
-
-    private function getSidlisteDepartures()
-    {
-        $name = 'Sídliště Čakovice';
-        $departures = $this->_getRawDepartures($name);
-        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
-
-        //TODO: check arrivals for delay
-        return [
-            'stop' => $name,
-            'departures' => $departures
-        ];
-    }
-
-    private function getKrystalovaDepartures()
-    {
-        $name = 'Krystalová';
-
-        $departures = $this->_getRawDepartures($name, [
-            'ids' => ['U114Z3']
-        ]);
-        $departures = array_filter($departures, function ($item) {
-            $route = $item['route_number'] ?? '';
-
-            return ($route !== '136');
-        });
-        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
-
-        return [
-            'stop' => $name,
-            'departures' => $departures
-        ];
-    }
-
-    private function getKralovaDepartures()
-    {
-        $name = 'Králova';
-
-        $departures = $this->_getRawDepartures($name, [
-            'ids' => ['U293Z2P']
-        ]);
-        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
-
-        return [
-            'stop' => $name,
-            'departures' => $departures
-        ];
-    }
-
-    private function getCukrovarDepartures()
-    {
-        $name = 'Cukrovar Čakovice';
-
-        $departures = $this->_getRawDepartures($name, [
-            'ids' => ['U63Z2P']
-        ]);
-        $departures = $this->filterByTime($departures, 'departure_predicted_ts', 1, 5, 60);
-
-        return [
-            'stop' => $name,
-            'departures' => $departures
-        ];
-    }
-
-    private function getTrainDepartures()
-    {
-        $name = 'Praha-Čakovice';
-        $departures = $this->_getRawDepartures($name);
-        $departures = array_filter($departures, function ($item) {
-            $destination = $item['destination'] ?? '';
-
-            return (mb_strpos($destination, 'Praha') !== false);
-        });
-        $departures = $this->filterByTime($departures, 'departure_predicted_ts');
-
-        return [
-            'stop' => $name,
-            'departures' => $departures
-        ];
     }
 
     private function map($map, $array)
@@ -179,7 +144,7 @@ class Board
         $array,
         $columnTimestamp,
         $pastCount = 1,
-        $futureCount = 4,
+        $futureCount = 5,
         $maxTimerangeMinutes = 90
     ) {
         $past = [];

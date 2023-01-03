@@ -22,7 +22,15 @@
                 <div class='timetable-name'>{{ timetable.stop }}</div>
                 <div class='timetable-content'>
                     {% for transport in timetable.departures %}
-                        <div class='timetable-item {{ (transport.departure_predicted_ts < now) ? 'past' : 'future' }}'>
+                        {% if (transport.departure_predicted_ts < now) %}
+                            {% set item_class = 'past' %}
+                        {% elseif not item_class or item_class == 'past' %}
+                            {% set item_class = 'current' %}
+                        {% else %}
+                            {% set item_class = 'future' %}
+                        {% endif %}
+                        <div class='timetable-item {{ item_class }}'>
+
                             <div>
                                 {{ transport.departure_predicted_diff }}
                             </div>

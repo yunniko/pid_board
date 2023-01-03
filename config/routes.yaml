@@ -9,3 +9,11 @@ stops:
 departures:
   path: /departures
   controller: App\Controller\IndexController::rawDepartures
+
+boards:
+  path: /board/{name}
+  controller: App\Controller\BoardsController::index
+  defaults:
+    name: 'home'
+  requirements:
+    name: '\w+'

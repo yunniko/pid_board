@@ -52,9 +52,9 @@
     font-size: 11pt;
 }
 
-.timetable-item:nth-child(2) div {
-    padding-top: 4px;
-    padding-bottom: 4px;
+.timetable-item.current div {
+    padding-top: 6px;
+    padding-bottom: 3px;
     border-top: 1px solid #555;
     border-bottom: 1px solid #555;
 }
