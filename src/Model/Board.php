@@ -24,9 +24,9 @@ class Board
         return [
             'buses1' => $this->getSidlisteDepartures(),
             'buses2' => $this->getKrystalovaDepartures(),
-//            'buses3' => $this->getCukrovarDepartures(),
+            'trains' => $this->getTrainDepartures(),
             'buses4' => $this->getKralovaDepartures(),
-            'trains' => $this->getTrainDepartures()
+            'buses3' => $this->getCukrovarDepartures(),
         ];
     }
 
