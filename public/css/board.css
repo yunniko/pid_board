@@ -45,7 +45,7 @@
 
 .past div {
     color: #999;
-    font-size: 9pt;
+    font-size: 11pt;
 }
 
 .future div {
@@ -53,9 +53,28 @@
 }
 
 .timetable-item:nth-child(2) div {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-size: 12pt;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-top: 1px solid #555;
+    border-bottom: 1px solid #555;
+}
+
+.timetable-content {
+    display: table;
+}
+
+.timetable-item {
+    display: table-row;
+}
+
+.timetable-item div {
+    display: table-cell;
+    padding: 3px;
+    white-space: nowrap;
+}
+
+.scheduled {
+    font-size: 9pt;
 }
 
 @media only screen and (max-width: 1024px) {

@@ -159,6 +159,7 @@ class Board
 
     private function processTime($array, $columns)
     {
+        $now = time();
         foreach ($array as $n => $arrayItem) {
             foreach ($columns as $column) {
                 if (empty($array[$n][$column])) {
@@ -167,6 +168,7 @@ class Board
                 $dateTime = new \DateTime($array[$n][$column]);
                 $array[$n][$column] = $dateTime->format('H:i');
                 $array[$n][$column . '_ts'] = $dateTime->getTimestamp();
+                $array[$n][$column . '_diff'] = floor(($dateTime->getTimestamp() - $now) / 60);
             }
         }
 

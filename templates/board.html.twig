@@ -23,19 +23,27 @@
                 <div class='timetable-content'>
                     {% for transport in timetable.departures %}
                         <div class='timetable-item {{ (transport.departure_predicted_ts < now) ? 'past' : 'future' }}'>
-                            <div class='timetable-item-content'>
-                                <div class='timetable-item-departure'>
-                                    {% if transport.departure_scheduled == transport.departure_predicted %}
-                                        <b>{{ transport.departure_scheduled }}</b>
-                                    {% else %}
-                                        <b>{{ transport.departure_predicted }}</b> (sch. {{ transport.departure_scheduled }})
-                                    {% endif %}
-                                    - <b>{{ transport.route_number }}</b>
-                                    {{ transport.destination }}
-                                    {% if transport.train_number %}
-                                        ({{ transport.train_number }})
-                                    {% endif %}
-                                </div>
+                            <div>
+                                {{ transport.departure_predicted_diff }}
+                            </div>
+                            <div>
+                                <b>{{ transport.departure_predicted }}</b>
+                            </div>
+                            <div>
+                                {% if transport.departure_scheduled != transport.departure_predicted %}
+                                    <span class="scheduled">({{ transport.departure_scheduled }})</span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <b>{{ transport.route_number }}</b>
+                            </div>
+                            <div>
+                                {{ transport.destination }}
+                            </div>
+                            <div>
+                                {% if transport.train_number %}
+                                    ({{ transport.train_number }})
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
