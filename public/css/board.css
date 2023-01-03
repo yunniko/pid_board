@@ -16,8 +16,6 @@
     padding: 5px;
     padding-top: 10px;
     margin: 5px;
-    margin-left: auto;
-    margin-right: auto;
     border: 4px solid #877995;
 }
 
@@ -58,4 +56,15 @@
     margin-top: 5px;
     margin-bottom: 5px;
     font-size: 12pt;
+}
+
+@media only screen and (max-width: 1024px) {
+    .timetable {
+        flex-direction: column;
+    }
+
+    .current-time-container {
+        justify-content: start;
+        align-items: start;
+    }
 }
