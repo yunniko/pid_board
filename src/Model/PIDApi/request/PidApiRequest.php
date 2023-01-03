@@ -8,9 +8,11 @@ abstract class PidApiRequest
 
     public $offset;
 
-    public function __construct(array $settings)
+    public function __construct(array $settings = null)
     {
-        $this->set($settings);
+        if ($settings) {
+            $this->set($settings);
+        }
     }
 
     public static abstract function getRoute();
