@@ -18,31 +18,32 @@ class IndexController extends AbstractController
         $board = new Board();
 
         $settings = [
-            'Sídliště Čakovice' => null,
-            'Krystalová' => function ($item) {
-                $route = $item['route_number'] ?? '';
-                $stop = $item['stop_id'] ?? '';
+            [
+                'name' => 'Sídliště Čakovice',
+                'query' => ['names' => ['Sídliště Čakovice']]
+            ],
+            [
+                'name' => 'Krystalová',
+                'query' => ['ids' => ['U114Z3']],
+                'filterCallback' => function ($item) {
+                    $route = $item->route_number ?? '';
 
-                return ($route !== '136' && $stop === 'U114Z3');
-            },
-            'Praha-Čakovice' => function ($item) {
-                $destination = $item['destination'] ?? '';
-
-                return (mb_strpos($destination, 'Praha') !== false);
-            },
-            'Králova' => function ($item) {
-                $stop = $item['stop_id'] ?? '';
-
-                return ($stop === 'U293Z2P');
-            },
-            'Cukrovar Čakovice' => function ($item) {
-                $stop = $item['stop_id'] ?? '';
-
-                return ($stop === 'U63Z2P');
-            },
+                    return ($route !== '136');
+                }
+            ],
+            [
+                'name' => 'Praha-Čakovice',
+                'query' => ['names' => ['Praha-Čakovice']],
+                'filterCallback' => function ($item) {
+                    $destination = $item->destination ?? '';
+    
+                    return (mb_strpos($destination, 'Praha') !== false);
+                }
+            ]
         ];
 
         $responseData = $board->getData($settings);
+        var_dump($responseData);
 
         return $this->render('board.html.twig', [
             'now' => time(),

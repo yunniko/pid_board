@@ -1,19 +1,13 @@
 <?php
 
-namespace App\Model\PIDApi\request;
+namespace App\Model\PIDApi\response;
 
-class PidApiStopsRequest extends PidApiRequest
+use App\Model\PIDApi\responseItem\PidApiStopsResponseItem;
+
+class PidApiStopsResponse extends PidApiResponse
 {
-    public $names;
-
-    public $ids;
-
-    public $aswIds;
-
-    public $cisIds;
-
-    public static function getRoute()
+    public function getItemClass(): string
     {
-        return '/gtfs/stops';
+        return PidApiStopsResponseItem::class;
     }
 }

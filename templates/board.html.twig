@@ -22,6 +22,7 @@
                 <div class='timetable-name'>{{ timetable.stop }}</div>
                 <div class='timetable-content'>
                     {% for transport in timetable.departures %}
+                        {% set item_class = false %}
                         {% if (transport.departure_predicted_ts < now) %}
                             {% set item_class = 'past' %}
                         {% elseif not item_class or item_class == 'past' %}
@@ -30,16 +31,15 @@
                             {% set item_class = 'future' %}
                         {% endif %}
                         <div class='timetable-item {{ item_class }}'>
-
                             <div>
                                 {{ transport.departure_predicted_diff }}
                             </div>
                             <div>
-                                <b>{{ transport.departure_predicted }}</b>
+                                <b>{{ transport.departure_predicted_short }}</b>
                             </div>
                             <div>
-                                {% if transport.departure_scheduled != transport.departure_predicted %}
-                                    <span class="scheduled">({{ transport.departure_scheduled }})</span>
+                                {% if transport.departure_scheduled_short != transport.departure_predicted_short %}
+                                    <span class="scheduled">({{ transport.departure_scheduled_short }})</span>
                                 {% endif %}
                             </div>
                             <div>

@@ -2,6 +2,8 @@
 
 namespace App\Model\PIDApi\request;
 
+use App\Model\PIDApi\response\PidApiDeparturesResponse;
+
 class PidApiDeparturesRequest extends PidApiRequest
 {
     public $names;
@@ -35,5 +37,9 @@ class PidApiDeparturesRequest extends PidApiRequest
     public static function getRoute()
     {
         return '/pid/departureboards';
+    }
+
+    public static function getResponseClass() {
+        return PidApiDeparturesResponse::class;
     }
 }

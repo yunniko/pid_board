@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Model\PIDApi\request\PidApiRequest;
 use Exception;
+use Symfony\Component\VarDumper\Cloner\Data;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 //https://api.golemio.cz/v2/pid/docs/openapi/#
@@ -46,8 +47,9 @@ class PidApi
             throw new \Exception('CODE ' . $response->getStatusCode() . ' (' . var_export($response->getInfo(),
                     true) . ')');
         }
+        $responseClass = $data->getResponseClass();
 
-        return new PidApiResponse($response->toArray());
+        return new $responseClass($response->toArray());
     }
 
 

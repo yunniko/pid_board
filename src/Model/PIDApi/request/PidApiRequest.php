@@ -17,9 +17,14 @@ abstract class PidApiRequest
 
     public static abstract function getRoute();
 
+    public static abstract function getResponseClass();
+
     public function toArray(bool $includeUndefined = false): array
     {
         $parameters = get_object_vars($this);
+        foreach ($parameters as $var => $default) {
+            $parameters[$var] = $this->$var;
+        }
         if (!$includeUndefined) {
             $parameters = array_filter($parameters, function ($item) {
                 return $item !== null;
@@ -32,7 +37,7 @@ abstract class PidApiRequest
     public function set(array $settings = [])
     {
         foreach ($settings as $key => $value) {
-            if (isset($this->$key)) {
+            if (property_exists($this, $key)) {
                 $this->$key = $value;
             }
         }
