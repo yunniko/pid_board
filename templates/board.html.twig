@@ -18,19 +18,19 @@
 
     <div class="timetable">
         {% for timetable in departures %}
+            {% set item_class = 'past' %}
             <div class='timetable-panel'>
                 <div class='timetable-name'>{{ timetable.stop }}</div>
                 <div class='timetable-content'>
                     {% for transport in timetable.departures %}
-                        {% set item_class = false %}
-                        {% if (transport.departure_predicted_ts < now) %}
-                            {% set item_class = 'past' %}
-                        {% elseif not item_class or item_class == 'past' %}
-                            {% set item_class = 'current' %}
-                        {% else %}
-                            {% set item_class = 'future' %}
+                        {% if (transport.departure_predicted_ts >= now) %}
+                            {% if (item_class == 'past') %}
+                                {% set item_class = 'current' %}
+                            {% else %}
+                                {% set item_class = 'future' %}
+                            {% endif %}
                         {% endif %}
-                        <div class='timetable-item {{ item_class }}'>
+                        <div class='timetable-item {{ item_class }} '>
                             <div>
                                 {{ transport.departure_predicted_diff }}
                             </div>
