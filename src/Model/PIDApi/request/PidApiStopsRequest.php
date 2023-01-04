@@ -16,7 +16,9 @@ class PidApiStopsRequest extends PidApiRequest
     {
         return '/gtfs/stops';
     }
-    public static function getResponseClass() {
-        return PidApiStopsResponse::class;
+
+    public static function getResponseClass()
+    {
+        return 'App\Model\PIDApi\response\PidApiStopsResponse';
     }
 }

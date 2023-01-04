@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\PIDApi\PidApi;
 use App\Model\PIDApi\request\PidApiDeparturesRequest;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -10,7 +11,8 @@ class Board
     public $defaultSettings = [
         'minutesBefore' => 30,
         'minutesAfter' => 180,
-        'limit' => 200
+        'total' => 50,
+        'limit' => 50
     ];
 
     private $api;
@@ -22,7 +24,7 @@ class Board
 
     public function getData($settings)
     {
-        $defaults = $this->defaultSettings; 
+        $defaults = $this->defaultSettings;
         $result = [];
         foreach ($settings as $data) {
             $query = $data['query'] ?? [];

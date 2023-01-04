@@ -2,7 +2,10 @@
 
 namespace App\Model\PIDApi\request;
 
-abstract class PidApiRequest
+use App\Model\PIDApi\interfaces\PidApiRequestInterface;
+use App\Model\PIDApi\interfaces\PidApiResponseInterface;
+
+abstract class PidApiRequest implements PidApiRequestInterface
 {
     public $limit;
 
@@ -18,6 +21,13 @@ abstract class PidApiRequest
     public static abstract function getRoute();
 
     public static abstract function getResponseClass();
+
+    public function makeResponse(array $data): PidApiResponseInterface
+    {
+        $class = static::getResponseClass();
+
+        return new $class($data);
+    }
 
     public function toArray(bool $includeUndefined = false): array
     {

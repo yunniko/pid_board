@@ -25,23 +25,122 @@ class BoardsController extends AbstractController
 
     public function getSettings($id)
     {
+        $masarykovo = [
+            'name' => 'Masarykovo nádraží',
+            'query' => ['ids' => ['U480Z301']],
+            'filterCallback' => function ($item) {
+                $route = $item->route_number ?? '';
+
+                return (in_array($route, ['S3', 'S34']));
+            }
+        ];
+        $hlavni = [
+            'name' => 'Hlavní nádraží',
+            'query' => ['ids' => ['U142Z301']],
+            'filterCallback' => function ($item) {
+                $route = $item->route_number ?? '';
+
+                return (in_array($route, ['R21']));
+            }
+        ];
         switch ($id) {
-            case 'ippavlova':
+            case 'from_work_hv':
                 return [
-
+                    [
+                        'name' => 'Pod karlovem',
+                        'query' => ['ids' => ['U560Z1P']],
+                    ],
+                    $masarykovo,
+                    $hlavni
                 ];
-            case 'letnany':
+            case 'to_work_hv':
                 return [
-                    'Letňany#1|U1000Z12P,U1000Z1,U1000Z12' => function ($item) {
-                        $route = $item['route_number'] ?? '';
+                    [
+                        'name' => 'IP Pavlova',
+                        'query' => ['ids' => ['U190Z2P', 'U190Z4P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
 
-                        return (in_array($route, ['136']));
-                    },
-                    'Letňany#2|U1000Z12P,U1000Z1,U1000Z12' => function ($item) {
-                        $route = $item['route_number'] ?? '';
+                            return (in_array($route, ['6', '11']));
+                        }
+                    ],
+                    [
+                        'name' => 'Flora',
+                        'query' => ['ids' => ['U118Z1P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
 
-                        return (in_array($route, ['351', '140']));
-                    }
+                            return (in_array($route, ['11']));
+                        }
+                    ],
+                    [
+                        'name' => 'Masarykovo nádraží',
+                        'query' => ['ids' => ['U480Z3P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['6']));
+                        }
+                    ],
+                    [
+                        'name' => 'Jindřišská',
+                        'query' => ['ids' => ['U203Z1P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['6']));
+                        }
+                    ],
+                ];
+            case 'to_cakovice':
+                $ids = ['U1000Z12P', 'U1000Z1', 'U1000Z12'];
+
+                return [
+                    [
+                        'name' => 'Letňany',
+                        'query' => ['ids' => $ids],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['136', '351']));
+                        }
+                    ],
+                    [
+                        'name' => 'Letňany - Cukrovar',
+                        'query' => ['ids' => $ids],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['140', '377', '158']));
+                        }
+                    ],
+                    [
+                        'name' => 'Vysočanská',
+                        'query' => ['ids' => ['U474Z5P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['136']));
+                        }
+                    ],
+                    [
+                        'name' => 'Palmovka',
+                        'query' => ['ids' => ['U529Z11P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['140']));
+                        }
+                    ],
+                    [
+                        'name' => 'Prosek',
+                        'query' => ['ids' => ['U603Z1P']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return (in_array($route, ['136', '140']));
+                        }
+                    ],
                 ];
             case 'vysocanska':
                 return [
@@ -49,19 +148,28 @@ class BoardsController extends AbstractController
                 ];
             default:
                 return [
-                    'Sídliště Čakovice' => null,
-                    'Krystalová|U114Z3' => function ($item) {
-                        $route = $item['route_number'] ?? '';
+                    [
+                        'name' => 'Sídliště Čakovice',
+                        'query' => ['names' => ['Sídliště Čakovice']]
+                    ],
+                    [
+                        'name' => 'Krystalová',
+                        'query' => ['ids' => ['U114Z3']],
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
 
-                        return ($route !== '136');
-                    },
-                    'Praha-Čakovice' => function ($item) {
-                        $destination = $item['destination'] ?? '';
+                            return ($route !== '136');
+                        }
+                    ],
+                    [
+                        'name' => 'Praha-Čakovice',
+                        'query' => ['names' => ['Praha-Čakovice']],
+                        'filterCallback' => function ($item) {
+                            $destination = $item->destination ?? '';
 
-                        return (mb_strpos($destination, 'Praha') !== false);
-                    },
-                    'Králova|U293Z2P' => null,
-                    'Cukrovar Čakovice|U63Z2P' => null
+                            return (mb_strpos($destination, 'Praha') !== false);
+                        }
+                    ]
                 ];
         }
     }

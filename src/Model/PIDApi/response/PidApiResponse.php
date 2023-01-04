@@ -2,16 +2,33 @@
 
 namespace App\Model\PIDApi\response;
 
-abstract class PidApiResponse
+use App\Model\PIDApi\interfaces\PidApiResponseInterface;
+
+abstract class PidApiResponse implements PidApiResponseInterface
 {
+    protected $rootKey;
+
     private $data;
 
     public function __construct(array $data)
     {
-        $this->setData($data['departures'] ?? []);
+        if (!empty($this->rootKey)) {
+            $this->setData($data[$this->rootKey] ?? []);
+        } else {
+            $this->setData($data);
+        }
+
     }
 
-    public function setData(array $data) {
+    public abstract function getItemClass(): string;
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function setData(array $data)
+    {
         $result = [];
         $itemClass = $this->getItemClass();
         foreach ($data as $item) {
@@ -20,19 +37,13 @@ abstract class PidApiResponse
         $this->data = $result;
     }
 
-    public abstract function getItemClass(): string;
-
-    public function getData() {
-        return $this->data;
-    }
-
     public function getFilteredData($filterCallback): array
     {
         if ($filterCallback) {
-            return array_map($filterCallback, $this->getData());
+            return array_filter($this->getData(), $filterCallback);
         } else {
             return $this->getData();
         }
-        
+
     }
 }

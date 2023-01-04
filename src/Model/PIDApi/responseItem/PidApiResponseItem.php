@@ -2,7 +2,9 @@
 
 namespace App\Model\PIDApi\responseItem;
 
-abstract class PidApiResponseItem
+use App\Model\PIDApi\interfaces\PidApiResponseItemInterface;
+
+abstract class PidApiResponseItem implements PidApiResponseItemInterface
 {
     private $_rawData;
 
@@ -15,10 +17,15 @@ abstract class PidApiResponseItem
     {
         return $this->_rawData;
     }
+
     public function __isset($name)
     {
-        if (array_key_exists($name, $this->getMap())) return true;
-        if (array_key_exists($name, $this->getRawData())) return true;
+        if (array_key_exists($name, $this->getMap())) {
+            return true;
+        }
+        if (array_key_exists($name, $this->getRawData())) {
+            return true;
+        }
         $timeKeys = $this->getTimeColumns();
         foreach ($timeKeys as $timeKey) {
             $timeKeysExtended = [
@@ -27,9 +34,12 @@ abstract class PidApiResponseItem
                 $timeKey . '_obj',
                 $timeKey . '_diff'
             ];
-            if (in_array($name, $timeKeysExtended)) return true;
+            if (in_array($name, $timeKeysExtended)) {
+                return true;
+            }
         }
         $value = $this->__get($name);
+
         return ($value !== null);
     }
 
@@ -44,7 +54,7 @@ abstract class PidApiResponseItem
                 $objKey = $timeKey . '_obj';
                 $diffKey = $timeKey . '_diff';
 
-                switch($attr) {
+                switch ($attr) {
                     case $tsKey:
                         $value = new \DateTime($this->getDataItemByKey($timeKey));
                         $value = $value->getTimestamp();
@@ -63,6 +73,7 @@ abstract class PidApiResponseItem
                 }
             }
         }
+
         return $value;
     }
 
@@ -86,6 +97,7 @@ abstract class PidApiResponseItem
                 break;
             }
         }
+
         return $current;
     }
 }

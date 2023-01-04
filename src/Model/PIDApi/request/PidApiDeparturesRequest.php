@@ -2,8 +2,6 @@
 
 namespace App\Model\PIDApi\request;
 
-use App\Model\PIDApi\response\PidApiDeparturesResponse;
-
 class PidApiDeparturesRequest extends PidApiRequest
 {
     public $names;
@@ -16,7 +14,7 @@ class PidApiDeparturesRequest extends PidApiRequest
 
     public $minutesBefore = 30;
 
-    public $minutesAfter = 90;
+    public $minutesAfter = 120;
 
     public $timeFrom;
 
@@ -39,7 +37,8 @@ class PidApiDeparturesRequest extends PidApiRequest
         return '/pid/departureboards';
     }
 
-    public static function getResponseClass() {
-        return PidApiDeparturesResponse::class;
+    public static function getResponseClass()
+    {
+        return 'App\Model\PIDApi\response\PidApiDeparturesResponse';
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Board;
-use App\Model\PidApi;
+use App\Model\PIDApi\PidApi;
 use App\Model\PIDApi\request\PidApiDeparturesRequest;
 use App\Model\PIDApi\request\PidApiStopsRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,19 +36,18 @@ class IndexController extends AbstractController
                 'query' => ['names' => ['Praha-Čakovice']],
                 'filterCallback' => function ($item) {
                     $destination = $item->destination ?? '';
-    
+
                     return (mb_strpos($destination, 'Praha') !== false);
                 }
             ]
         ];
 
-        $responseData = $board->getData($settings);
-        var_dump($responseData);
-
-        return $this->render('board.html.twig', [
+        $responseData = [
             'now' => time(),
-            'departures' => $responseData
-        ]);
+            'departures' => $board->getData($settings)
+        ];
+
+        return $this->render('board.html.twig', $responseData);
     }
 
     public function rawStops(Request $request): Response
@@ -62,7 +61,7 @@ class IndexController extends AbstractController
             $response = $api->get($request);
 
             $responseData = '<pre>' .
-                            var_export($response->getByKey('features'), true) .
+                            var_export($response->getData(), true) .
                             '</pre>';
         }
 
@@ -94,6 +93,15 @@ class IndexController extends AbstractController
             <form><input name="names" value="' . $names . '"><input type="submit" value="Search"></form>
             ' .
             $responseData
+        );
+    }
+
+    public function renderDebug($data)
+    {
+        return new Response(
+            '<pre>' .
+            var_export($data, true) .
+            '</pre>'
         );
     }
 }
