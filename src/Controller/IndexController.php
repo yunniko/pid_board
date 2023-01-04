@@ -84,7 +84,7 @@ class IndexController extends AbstractController
             $response = $api->get($request);
 
             $responseData = '<pre>' .
-                            var_export($response->getByKey('departures'), true) .
+                            var_export($response->getData(), true) .
                             '</pre>';
         }
 

@@ -3,6 +3,7 @@
 namespace App\Model\PIDApi;
 
 use App\Model\PIDApi\interfaces\PidApiRequestInterface;
+use App\Model\PIDApi\interfaces\PidApiResponseInterface;
 use Exception;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -32,7 +33,7 @@ class PidApi
         return $this->version . $method;
     }
 
-    public function get(PidApiRequestInterface $data)
+    public function get(PidApiRequestInterface $data): PidApiResponseInterface
     {
         $url = $this->makeUrl($data::getRoute());
         $response = $this->client->request(

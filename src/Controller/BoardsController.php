@@ -142,10 +142,10 @@ class BoardsController extends AbstractController
                         }
                     ],
                 ];
-            case 'vysocanska':
+            /*case 'vysocanska':
                 return [
 
-                ];
+                ];*/
             default:
                 return [
                     [
