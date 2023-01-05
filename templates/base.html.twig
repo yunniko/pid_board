@@ -11,6 +11,12 @@
     {% endblock %}
 </head>
 <body>
+<div class="nav-container">
+    <div class="nav-toggle"></div>
+        {% block navigation %}{% endblock %}
+    </div>
+</div>
+    
 {% block content %}{% endblock %}
 </body>
 
