@@ -43,12 +43,16 @@ class PidApi
                 'query' => $data->toArray()
             ]
         );
-        if (200 !== $response->getStatusCode()) {
-            throw new \Exception('CODE ' . $response->getStatusCode() . ' (' . var_export($response->getInfo(),
-                    true) . ')');
+        $statusCode = $response->getStatusCode();
+        if ($statusCode === 404) {
+            $result = [];
+        } elseif($statusCode === 200) {
+            $result = $response->toArray();
+        } else {
+            throw new \Exception('CODE ' . $statusCode . ' (' . var_export($response->getInfo(), true) . ')');
         }
 
-        return $data->makeResponse($response->toArray());
+        return $data->makeResponse($result ?? []);
     }
 
 
