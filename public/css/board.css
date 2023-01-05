@@ -3,7 +3,8 @@
     font-size: 20pt;
     font-weight: bold;
     color: #877995;
-    padding: 5px;
+    padding: 5px 20px;
+    text-align: center;
 }
 
 .timetable {

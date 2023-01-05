@@ -29,9 +29,6 @@ body {
     border-bottom: 1px solid white;
     white-space: nowrap;
 }
-.nav:last-child {
-    border-right: 1px solid #877995;
-}
 .nav:hover {
     border-bottom: 1px dotted #877995;
 }
