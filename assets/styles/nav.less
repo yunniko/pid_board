@@ -17,25 +17,25 @@
     font-weight: bold;
     text-align: center;
     border-left: 1px solid @secondaryColor;
-    border-bottom: 1px solid @bgColor;
     white-space: nowrap;
+    border-bottom: 10px solid @mainColor;
 
     &:hover {
-      border-bottom: 1px dotted @secondaryColor;
       color: @secondaryColor;
     }
 
     &.active {
-      border-bottom: 1px solid @secondaryColor;
+      background-color: @mainColor;
+      color: @bgColor;
     }
   }
 
   .nav-toggle {
     width: 20px;
     background-color: @accentColor;
-    min-height: 20px;
+    min-height: 10px;
     align-self: stretch;
-    color: white
+    color: white;
   }
 
   &.hidden {
