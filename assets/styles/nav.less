@@ -1,0 +1,58 @@
+@import "variables";
+
+.nav-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  align-content: flex-start;
+  transition: all 1s ease-out;
+
+  .nav {
+    flex: 1 1 0;
+    padding: 10px;
+    text-decoration: none;
+    color: @mainColor;
+    font-weight: bold;
+    text-align: center;
+    border-left: 1px solid @secondaryColor;
+    border-bottom: 1px solid @bgColor;
+    white-space: nowrap;
+
+    &:hover {
+      border-bottom: 1px dotted @secondaryColor;
+      color: @secondaryColor;
+    }
+
+    &.active {
+      border-bottom: 1px solid @secondaryColor;
+    }
+  }
+
+  .nav-toggle {
+    width: 20px;
+    background-color: @accentColor;
+    min-height: 20px;
+    align-self: stretch;
+    color: white
+  }
+
+  &.hidden {
+    * {
+      display: none;
+    }
+
+    .nav-toggle {
+      display: block;
+    }
+  }
+}
+
+
+
+
+
+
+
+

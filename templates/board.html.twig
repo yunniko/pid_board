@@ -2,20 +2,19 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/board.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="{{ asset('css/board.css') }}" rel="stylesheet"/>
+    {{ encore_entry_script_tags('board') }}
 {% endblock %}
 
 {% block navigation %}
-        <div class="current-time">{{ now|date('H:i:s') }}</div>
-        <a class='nav' href='/board'>SČ</a>
-        <a class='nav' href='/board/to_work_hv'>To work HV</a>
-        <a class='nav' href='/board/to_cakovice'>To SČ</a>
-        <a class='nav' href='/board/from_work_hv'>From work HV</a>
+    <div class="current-time">{{ now|date('H:i:s') }}</div>
+    <a class='nav' href='/board'>SČ</a>
+    <a class='nav' href='/board/to_work_hv'>To work HV</a>
+    <a class='nav' href='/board/to_cakovice'>To SČ</a>
+    <a class='nav' href='/board/from_work_hv'>From work HV</a>
 {% endblock %}
 
 {% block content %}
