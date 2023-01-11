@@ -2,15 +2,18 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {{ encore_entry_script_tags('board') }}
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    {{ encore_entry_script_tags('board') }}
+    {{ encore_entry_link_tags('board') }}
 {% endblock %}
 
 {% block navigation %}
-    <div class="current-time">{{ now|date('H:i:s') }}</div>
+    <div class="nav-header">
+        <a class="current-time" href="/">{{ now|date('H:i:s') }}</a>
+    </div>
     <a class='nav' href='/board'>SČ</a>
     <a class='nav' href='/board/to_work_hv'>To work HV</a>
     <a class='nav' href='/board/to_cakovice'>To SČ</a>

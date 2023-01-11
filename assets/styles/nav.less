@@ -1,5 +1,23 @@
 @import "variables";
 
+.nav-header {
+  flex: 1 1 0;
+  font-size: 20pt;
+  font-weight: bold;
+  color: @accentColor;
+  padding: 5px 20px;
+  text-align: center;
+
+  a {
+    text-decoration: none;
+    color: @accentColor;
+
+    &:hover {
+      color: @mainColor;
+    }
+  }
+}
+
 .nav-container {
   display: flex;
   flex-direction: row;

@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('index') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('index') }}
+{% endblock %}
+
+{% block navigation %}
+    <div class="nav-header">PID boards</div>
+    <a class='nav' href='/'>Index</a>
+    <a class='nav' href='/board'>Boards</a>
+    <a class='nav' href='/stops'>Raw stops</a>
+    <a class='nav' href='/departures'>Raw departures</a>
+{% endblock %}
+
+{% block content %}
+    <h1>PID boards</h1>
+    <ul>
+        <li>
+            <a href='/board'>Sídliště Čakovice</a>
+        </li>
+        <li>
+            <a href='/board/to_work_hv'>IP Pavlova, Flora, Masarykovo nádraží (tram), Jindřišská</a>
+        </li>
+        <li>
+            <a href='/board/to_cakovice'>Letňany, Vysočanská, Palmovka</a>
+        </li>
+        <li>
+            <a href='/board/from_work_hv'>Pod karlovem, Masarykovo nádraží, Hlavní nádraží</a>
+        </li>
+    </ul>
+{% endblock %}
