@@ -162,10 +162,6 @@ class BoardsController extends AbstractController
                         }
                     ],
                     [
-                        'name' => 'Za Avií',
-                        'query' => ['ids' => ['U451Z2P', 'U451Z2']],
-                    ],
-                    [
                         'name' => 'Praha-Čakovice',
                         'query' => ['names' => ['Praha-Čakovice']],
                         'filterCallback' => function ($item) {
@@ -173,6 +169,12 @@ class BoardsController extends AbstractController
 
                             return (mb_strpos($destination, 'Praha') !== false);
                         }
+                    ],
+                    [
+                        'name' => 'Za Avií',
+                        'query' => ['ids' => ['U451Z2P', 'U451Z2']],
+                        'past_count' => 3,
+                        'future_count' => 15
                     ]
                 ];
         }
