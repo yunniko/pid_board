@@ -162,6 +162,10 @@ class BoardsController extends AbstractController
                         }
                     ],
                     [
+                        'name' => 'Za Avií',
+                        'query' => ['ids' => ['U451Z2P', 'U451Z2']],
+                    ],
+                    [
                         'name' => 'Praha-Čakovice',
                         'query' => ['names' => ['Praha-Čakovice']],
                         'filterCallback' => function ($item) {
