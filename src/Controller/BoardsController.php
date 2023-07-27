@@ -40,7 +40,7 @@ class BoardsController extends AbstractController
             'filterCallback' => function ($item) {
                 $route = $item->route_number ?? '';
 
-                return (in_array($route, ['R21']));
+                return (in_array($route, ['R21', 'S3']));
             }
         ];
         switch ($id) {
@@ -106,7 +106,7 @@ class BoardsController extends AbstractController
                         }
                     ],
                     [
-                        'name' => 'Letňany - Cukrovar',
+                        'name' => 'Letňany - Za Avií',
                         'query' => ['ids' => $ids],
                         'filterCallback' => function ($item) {
                             $route = $item->route_number ?? '';
@@ -174,7 +174,12 @@ class BoardsController extends AbstractController
                         'name' => 'Za Avií',
                         'query' => ['ids' => ['U451Z2P', 'U451Z2']],
                         'past_count' => 3,
-                        'future_count' => 15
+                        'future_count' => 15,
+                        'filterCallback' => function ($item) {
+                            $route = $item->route_number ?? '';
+
+                            return ($route !== '202');
+                        }
                     ]
                 ];
         }
