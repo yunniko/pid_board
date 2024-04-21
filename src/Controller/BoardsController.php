@@ -31,7 +31,7 @@ class BoardsController extends AbstractController
             'filterCallback' => function ($item) {
                 $route = $item->route_number ?? '';
 
-                return (in_array($route, ['S3', 'S34', 'R43']));
+                return (in_array($route, ['R21', 'S3', 'S34', 'R43']));
             }
         ];
         $hlavni = [
@@ -40,7 +40,7 @@ class BoardsController extends AbstractController
             'filterCallback' => function ($item) {
                 $route = $item->route_number ?? '';
 
-                return (in_array($route, ['R21', 'S3']));
+                return (in_array($route, ['R21', 'S3', 'S34', 'R43']));
             }
         ];
         switch ($id) {
