@@ -111,7 +111,7 @@ class BoardsController extends AbstractController
                         'filterCallback' => function ($item) {
                             $route = $item->route_number ?? '';
 
-                            return (in_array($route, ['140', '377', '158']));
+                            return (in_array($route, ['140', '377', '158', '58']));
                         }
                     ],
                     [
@@ -125,11 +125,11 @@ class BoardsController extends AbstractController
                     ],
                     [
                         'name' => 'Palmovka',
-                        'query' => ['ids' => ['U529Z11P']],
+                        'query' => ['ids' => ['U529Z4P']],
                         'filterCallback' => function ($item) {
                             $route = $item->route_number ?? '';
 
-                            return (in_array($route, ['140']));
+                            return (in_array($route, ['140', '58']));
                         }
                     ],
                     [
