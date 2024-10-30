@@ -129,7 +129,7 @@ class BoardsController extends AbstractController
                         'filterCallback' => function ($item) {
                             $route = $item->route_number ?? '';
 
-                            return (in_array($route, ['140', '58']));
+                            return (in_array($route, ['140', '158', '58']));
                         }
                     ],
                     [
