@@ -52,11 +52,19 @@
 
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "npm-i": "npm install",
+        "npm-build": "npm build",
+        "npm-run": {
+            "@npm-i",
+            "@npm-build"
+        },
         "post-install-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "@npm-run"
         ],
         "post-update-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "@npm-run"
         ]
     },
     "conflict": {
