@@ -54,10 +54,10 @@
         },
         "npm-i": "npm install",
         "npm-build": "npm build",
-        "npm-run": {
+        "npm-run": [
             "@npm-i",
             "@npm-build"
-        },
+        ],
         "post-install-cmd": [
             "@auto-scripts",
             "@npm-run"
