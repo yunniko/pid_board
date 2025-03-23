@@ -53,7 +53,7 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "npm-i": "npm install",
-        "npm-build": "npm build",
+        "npm-build": "npm run build",
         "npm-run": [
             "@npm-i",
             "@npm-build"
