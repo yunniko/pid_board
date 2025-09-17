@@ -27,7 +27,9 @@ class PidApiDeparturesResponseItem extends PidApiResponseItem
             'destination' => 'trip.headsign',
             'train_number' => 'trip.short_name',
             'stop_id' => 'stop.id',
-            'last_stop' => 'last_stop.name'
+            'last_stop' => 'last_stop.name',
+            'platform' => 'stop.platform_code',
+            'transport_type' => 'route.type'
         ];
     }
 }
