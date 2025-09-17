@@ -142,7 +142,7 @@ class BoardsController extends AbstractController
                         'query' => ['ids' => ['U1048Z301']],
                         'filters' => [
                             new FilterByRouteNumber(['S8', 'S88']),
-                            new FilterByDestinationPrefix('Praha')
+                            new FilterByDestinationPrefix(['Praha'])
                         ]
                     ]
                 ];
@@ -160,7 +160,7 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Praha-Čakovice',
                         'query' => ['names' => ['Praha-Čakovice']],
-                        'filters' => new FilterByDestinationPrefix('Praha')
+                        'filters' => new FilterByDestinationPrefix(['Praha'])
                     ],
                     [
                         'name' => 'Za Avií',
