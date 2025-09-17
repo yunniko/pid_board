@@ -4,15 +4,15 @@ namespace App\Filters;
 
 use App\Model\PIDApi\interfaces\PidApiResponseItemInterface;
 
-class FilterByDestinationPrefix extends Filter
+class FilterByPartialDestination extends Filter
 {
 
     public final function filter(PidApiResponseItemInterface $object): bool
     {
         $destination = $item->destination ?? '';
 
-        foreach ($this->filterValues as $prefix) {
-            if (mb_strpos($destination, $prefix) === 0) {
+        foreach ($this->filterValues as $part) {
+            if (mb_strpos($destination, $part) !== false) {
                 return true;
             }
         }

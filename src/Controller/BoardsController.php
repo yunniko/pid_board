@@ -2,8 +2,8 @@
 // src/Controller/LuckyController.php
 namespace App\Controller;
 
-use App\Filters\FilterByDestinationPrefix;
 use App\Filters\FilterByExcludeRouteNumber;
+use App\Filters\FilterByPartialDestination;
 use App\Filters\FilterByRouteNumber;
 use App\Model\Board;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -150,7 +150,7 @@ class BoardsController extends AbstractController
                         'query' => ['ids' => ['U1048Z301']],
                         'filters' => [
                             new FilterByRouteNumber(['S8', 'S88']),
-                            new FilterByDestinationPrefix(['Praha'])
+                            new FilterByPartialDestination(['Praha'])
                         ]
                     ]
                 ];
@@ -168,7 +168,7 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Praha-Čakovice',
                         'query' => ['ids' => ['U3212Z301']],
-                        'filters' => new FilterByDestinationPrefix(['Praha'])
+                        'filters' => new FilterByPartialDestination(['Praha'])
                     ],
                     [
                         'name' => 'Za Avií',
