@@ -117,7 +117,7 @@ class BoardsController extends AbstractController
                         'filters' => new FilterByRouteNumber(['117', '121'])
                     ],
                     [
-                        'name' => 'Kačerov A',
+                        'name' => 'Kačerov',
                         'query' => ['ids' => ['U228Z3P']],
                         'filters' => new FilterByRouteNumber(['106', '196', '150'])
                     ],
@@ -130,12 +130,12 @@ class BoardsController extends AbstractController
             case 'from_work_maddz':
                 return [
                     [
-                        'name' => 'Novodvorská (D)',
+                        'name' => 'Novodvorská',
                         'query' => ['ids' => ['U497Z4P']],
                         'filters' => new FilterByRouteNumber(['117', '121'])
                     ],
                     [
-                        'name' => 'Novodvorská (D) - Kačerov',
+                        'name' => 'Novodvorská - Kačerov',
                         'query' => ['ids' => ['U497Z4P']],
                         'filters' => new FilterByRouteNumber(['106', '196', '150'])
                     ],
