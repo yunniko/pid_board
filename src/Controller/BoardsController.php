@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Filters\FilterByExcludeRouteNumber;
-use App\Filters\FilterByPartialDestination;
 use App\Filters\FilterByRouteNumber;
 use App\Model\Board;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -150,7 +149,11 @@ class BoardsController extends AbstractController
                         'query' => ['ids' => ['U1048Z301']],
                         'filters' => [
                             new FilterByRouteNumber(['S8', 'S88']),
-                            new FilterByPartialDestination(['Praha'])
+                            function ($item) {
+                                $destination = $item->destination ?? '';
+
+                                return (mb_strpos($destination, 'Praha') !== false);
+                            }
                         ]
                     ]
                 ];
