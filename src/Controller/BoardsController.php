@@ -137,7 +137,7 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Novodvorská - Kačerov',
                         'query' => ['ids' => ['U497Z4P']],
-                        'filters' => new FilterByRouteNumber(['106', '196', '150'])
+                        'filters' => new FilterByRouteNumber(['106', '196', '150', '139'])
                     ],
                     [
                         'name' => 'Praha-Krč',
