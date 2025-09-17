@@ -140,11 +140,6 @@ class BoardsController extends AbstractController
                         'filters' => new FilterByRouteNumber(['106', '196', '150'])
                     ],
                     [
-                        'name' => 'Lhotka',
-                        'query' => ['ids' => ['U329Z2P']],
-                        'filters' => new FilterByRouteNumber(['157'])
-                    ],
-                    [
                         'name' => 'Praha-Krč',
                         'query' => ['ids' => ['U1048Z301']],
                         'filters' => function ($item) {
