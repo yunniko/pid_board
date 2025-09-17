@@ -56,7 +56,7 @@
                                 {{ transport.destination }}
                             </div>
                             <div>
-                                {% if transport.transport_type == constant('App\Constants\TransportType::TRAIN') and transport.platform %}
+                                {% if transport.transport_type == constant('App\\Constants\\TransportType::TRAIN') and transport.platform %}
                                     [{{ transport.platform }}]
                                 {% endif %}
                             </div>
