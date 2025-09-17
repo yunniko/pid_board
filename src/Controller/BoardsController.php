@@ -147,14 +147,11 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Praha-Krč',
                         'query' => ['ids' => ['U1048Z301']],
-                        'filters' => [
-                            new FilterByRouteNumber(['S8', 'S88']),
-                            function ($item) {
-                                $destination = $item->destination ?? '';
+                        'filters' => function ($item) {
+                            $destination = $item->destination ?? '';
 
-                                return (mb_strpos($destination, 'Praha') !== false);
-                            }
-                        ]
+                            return (mb_strpos($destination, 'Praha') !== false);
+                        }
                     ]
                 ];
             default:
