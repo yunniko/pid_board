@@ -96,7 +96,7 @@ class BoardsController extends AbstractController
                     ],
                     [
                         'name' => 'Palmovka',
-                        'query' => ['ids' => ['U529Z11P']],
+                        'query' => ['ids' => ['U529Z4P']],
                         'filters' => $f_136_58
                     ],
                     [
@@ -108,12 +108,12 @@ class BoardsController extends AbstractController
             case 'to_work_maddz':
                 return [
                     [
-                        'name' => 'Budějovická P',
+                        'name' => 'Poliklinika Budějovická (P)',
                         'query' => ['ids' => ['U50Z5P']],
                         'filters' => new FilterByRouteNumber(['117', '121'])
                     ],
                     [
-                        'name' => 'Budějovická L',
+                        'name' => 'Poliklinika Budějovická (L)',
                         'query' => ['ids' => ['U50Z6P']],
                         'filters' => new FilterByRouteNumber(['117', '121'])
                     ],
@@ -167,7 +167,7 @@ class BoardsController extends AbstractController
                     ],
                     [
                         'name' => 'Praha-Čakovice',
-                        'query' => ['names' => ['Praha-Čakovice']],
+                        'query' => ['ids' => ['U3212Z301']],
                         'filters' => new FilterByDestinationPrefix(['Praha'])
                     ],
                     [
