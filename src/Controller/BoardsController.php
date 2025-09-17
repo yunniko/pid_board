@@ -31,6 +31,8 @@ class BoardsController extends AbstractController
         $id = mb_strtolower($id);
         switch ($id) {
             case 'from_work_hv':
+                $trains = new FilterByRouteNumber(['S3', 'S30', 'S34', 'R21', 'R43', 'T3']);
+
                 return [
                     [
                         'name' => 'Pod karlovem',
@@ -39,12 +41,12 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Praha Masarykovo nádraží',
                         'query' => ['ids' => ['U480Z301']],
-                        'filters' => new FilterByRouteNumber(['S3', 'S34', 'R43'])
+                        'filters' => $trains
                     ],
                     [
                         'name' => 'Praha Hl.n.',
                         'query' => ['ids' => ['U142Z301']],
-                        'filters' => new FilterByRouteNumber(['R21', 'S3', 'S30', 'T3'])
+                        'filters' => $trains
                     ]
                 ];
             case 'to_work_hv':
