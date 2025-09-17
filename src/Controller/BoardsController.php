@@ -168,7 +168,11 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Praha-Čakovice',
                         'query' => ['ids' => ['U3212Z301']],
-                        'filters' => new FilterByPartialDestination(['Praha'])
+                        'filters' => function ($item) {
+                            $destination = $item->destination ?? '';
+
+                            return (mb_strpos($destination, 'Praha') !== false);
+                        }
                     ],
                     [
                         'name' => 'Za Avií',
