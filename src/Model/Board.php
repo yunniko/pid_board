@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Model\PIDApi\PidApi;
 use App\Model\PIDApi\request\PidApiDeparturesRequest;
+use FilterInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
 class Board
@@ -28,12 +29,13 @@ class Board
         $result = [];
         foreach ($settings as $data) {
             $query = $data['query'] ?? [];
-            $filterCallback = $data['filterCallback'] ?? null;
+            $filters = $data['filters'] ?? null;
             $name = $data['name'] ?? '';
             $settingsObject = new PidApiDeparturesRequest(array_merge($defaults, $query));
             $response = $this->api->get($settingsObject);
-            $departures = $response->getFilteredData($filterCallback);
-            $departures = $this->filterByTime($departures, 'departure_predicted_ts', $data['past_count'] ?? 1, $data['future_count'] ?? 5, $data['max_timerange_minutes'] ?? 90);
+            $departures = $response->getFilteredData($filters);
+            $departures = $this->filterByTime($departures, 'departure_predicted_ts', $data['past_count'] ?? 1,
+                $data['future_count'] ?? 5, $data['max_timerange_minutes'] ?? 90);
             $result[] = [
                 'stop' => $name,
                 'departures' => $departures

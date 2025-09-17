@@ -2,9 +2,11 @@
 
 namespace App\Model\PIDApi\interfaces;
 
+use FilterInterface;
+
 interface PidApiResponseInterface
 {
     public function getData();
 
-    public function getFilteredData($filterCallback): array;
+    public function getFilteredData($filters): array;
 }

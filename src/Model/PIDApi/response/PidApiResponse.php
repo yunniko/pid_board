@@ -2,6 +2,7 @@
 
 namespace App\Model\PIDApi\response;
 
+use App\Filters\FilterInterface;
 use App\Model\PIDApi\interfaces\PidApiResponseInterface;
 
 abstract class PidApiResponse implements PidApiResponseInterface
@@ -37,13 +38,26 @@ abstract class PidApiResponse implements PidApiResponseInterface
         $this->data = $result;
     }
 
-    public function getFilteredData($filterCallback): array
+    public function getFilteredData($filters): array
     {
-        if ($filterCallback) {
-            return array_filter($this->getData(), $filterCallback);
-        } else {
+        if (empty($filters)) {
             return $this->getData();
         }
+        if (!is_array($filters)) {
+            $filters = [$filters];
+        }
 
+        $data = $this->getData();
+        foreach ($filters as $filter) {
+            if (is_callable($filter)) {
+                $data = array_filter($data, $filter);
+            } else if ($filter instanceof FilterInterface) {
+                $data = array_filter($data, function ($item) use ($filter) {
+                    return ($filter->filter($item));
+                });
+            }
+        }
+
+        return $data;
     }
 }
