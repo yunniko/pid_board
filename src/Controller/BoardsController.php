@@ -108,15 +108,23 @@ class BoardsController extends AbstractController
             case 'to_work_maddz':
                 return [
                     [
-                        'name' => 'Budějovická',
+                        'name' => 'Budějovická P',
+                        'query' => ['ids' => ['U50Z5P']],
                         'filters' => new FilterByRouteNumber(['117', '121'])
                     ],
                     [
-                        'name' => 'Kačerov',
+                        'name' => 'Budějovická L',
+                        'query' => ['ids' => ['U50Z6P']],
+                        'filters' => new FilterByRouteNumber(['117', '121'])
+                    ],
+                    [
+                        'name' => 'Kačerov A',
+                        'query' => ['ids' => ['U228Z3P']],
                         'filters' => new FilterByRouteNumber(['106', '196', '150'])
                     ],
                     [
-                        'name' => 'Hlavní nádraží',
+                        'name' => 'Praha Hl.n.',
+                        'query' => ['ids' => ['U142Z301']],
                         'filters' => new FilterByRouteNumber(['S8', 'S88'])
                     ]
                 ];
