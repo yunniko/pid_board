@@ -149,6 +149,37 @@ class BoardsController extends AbstractController
                         }
                     ]
                 ];
+            case 'from_work_hv_2':
+                $trains = new FilterByRouteNumber(['S3', 'S30', 'S34', 'R21', 'R43', 'T3']);
+                $bus135 = new FilterByRouteNumber(['135']);
+
+                return [
+                    [
+                        'name' => 'To Hl.n. (15 min)',
+                        'query' => ['ids' => ['U301Z1P']],
+                        'filters' => $bus135
+                    ],
+                    [
+                        'name' => 'Praha Masarykovo nádraží',
+                        'query' => ['ids' => ['U480Z301']],
+                        'filters' => $trains
+                    ],
+                    [
+                        'name' => 'Praha Hl.n.',
+                        'query' => ['ids' => ['U142Z301']],
+                        'filters' => $trains
+                    ],
+                    [
+                        'name' => 'To Bělocerkevská (6 min)',
+                        'query' => ['ids' => ['U301Z2P']],
+                        'filters' => $bus135
+                    ],
+                    [
+                        'name' => 'From Bělocerkevská (45 min)',
+                        'query' => ['ids' => ['U29Z2P']],
+                        'filters' => new FilterByRouteNumber(['136'])
+                    ],
+                ];
             default:
                 return [
                     [
