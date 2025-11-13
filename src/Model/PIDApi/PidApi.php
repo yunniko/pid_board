@@ -49,7 +49,8 @@ class PidApi
         } elseif($statusCode === 200) {
             $result = $response->toArray();
         } else {
-            throw new \Exception('CODE ' . $statusCode . ' (' . var_export($response->getInfo(), true) . ')');
+            $error = $response->toArray();
+            throw new Exception('CODE ' . $statusCode . ' (' . var_export($error) . ')');
         }
 
         return $data->makeResponse($result ?? []);
