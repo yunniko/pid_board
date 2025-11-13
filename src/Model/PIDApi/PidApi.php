@@ -36,7 +36,7 @@ class PidApi
     public function get(PidApiRequestInterface $data): PidApiResponseInterface
     {
         $url = $this->makeUrl($data::getRoute());
-        $queryString = http_build_query($data->toArray(), '', '&', PHP_QUERY_RFC1738);
+        $queryString = $this->prepareQuery($data->toArray());
         $response = $this->client->request(
             'GET',
             $url . '?' . $queryString,
@@ -54,5 +54,9 @@ class PidApi
         return $data->makeResponse($result ?? []);
     }
 
-
+    private function prepareQuery($data) {
+        $query = http_build_query($data);
+        $result = preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D', $query);
+        return $result;
+    }
 }
