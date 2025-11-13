@@ -36,12 +36,10 @@ class PidApi
     public function get(PidApiRequestInterface $data): PidApiResponseInterface
     {
         $url = $this->makeUrl($data::getRoute());
+        $queryString = http_build_query($data->toArray(), '', '&', PHP_QUERY_RFC1738);
         $response = $this->client->request(
             'GET',
-            $url,
-            [
-                'query' => $data->toArray()
-            ]
+            $url . '?' . $queryString,
         );
         $statusCode = $response->getStatusCode();
         if ($statusCode === 404) {
