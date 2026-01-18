@@ -29,7 +29,7 @@ class BoardsController extends AbstractController
     {
         $id = mb_strtolower($id);
         switch ($id) {
-            case 'from_work_hv':
+            case 'from_work_hv_deprecated':
                 $trains = new FilterByRouteNumber(['S3', 'S30', 'S34', 'R21', 'R43', 'T3']);
 
                 return [
@@ -48,7 +48,7 @@ class BoardsController extends AbstractController
                         'filters' => $trains
                     ]
                 ];
-            case 'to_work_hv_deprecated':
+            case 'to_work_hv':
                 $f_6_11 = new FilterByRouteNumber(['6', '11']);
 
                 return [
