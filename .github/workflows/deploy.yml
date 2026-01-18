@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release  # Only triggers when you push to this branch
+  workflow_dispatch: # This enables the manual button
 
 jobs:
   deploy:
