@@ -48,7 +48,7 @@ class BoardsController extends AbstractController
                         'filters' => $trains
                     ]
                 ];
-            case 'to_work_hv':
+            case 'to_work_hv_deprecated':
                 $f_6_11 = new FilterByRouteNumber(['6', '11']);
 
                 return [
@@ -149,7 +149,7 @@ class BoardsController extends AbstractController
                         }
                     ]
                 ];
-            case 'from_work_hv_2':
+            case 'from_work_hv':
                 $trains = new FilterByRouteNumber(['S3', 'S30', 'S34', 'R21', 'R43', 'T3']);
                 $bus135 = new FilterByRouteNumber(['135']);
 
