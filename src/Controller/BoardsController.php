@@ -109,12 +109,12 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Poliklinika Budějovická (P)',
                         'query' => ['ids' => ['U50Z5P']],
-                        'filters' => new FilterByRouteNumber(['117', '121'])
+                        'filters' => new FilterByRouteNumber(['121'])
                     ],
                     [
                         'name' => 'Poliklinika Budějovická (L)',
                         'query' => ['ids' => ['U50Z6P']],
-                        'filters' => new FilterByRouteNumber(['117', '121'])
+                        'filters' => new FilterByRouteNumber(['121'])
                     ],
                     [
                         'name' => 'Kačerov',
@@ -132,7 +132,7 @@ class BoardsController extends AbstractController
                     [
                         'name' => 'Novodvorská',
                         'query' => ['ids' => ['U497Z4P']],
-                        'filters' => new FilterByRouteNumber(['117', '121'])
+                        'filters' => new FilterByRouteNumber(['121'])
                     ],
                     [
                         'name' => 'Novodvorská - Kačerov',
