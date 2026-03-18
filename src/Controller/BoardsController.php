@@ -147,6 +147,11 @@ class BoardsController extends AbstractController
 
                             return (mb_strpos($destination, 'Praha') !== false);
                         }
+                    ],
+                    [
+                        'name' => 'Praha Hl.n.',
+                        'query' => ['ids' => ['U142Z301']],
+                        'filters' => $trains
                     ]
                 ];
             case 'from_work_hv':
