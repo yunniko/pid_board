@@ -106,11 +106,11 @@ class BoardsController extends AbstractController
                 ];
             case 'to_work_maddz':
                 return [
-                    [
+                    /*[
                         'name' => 'Poliklinika Budějovická (P)',
                         'query' => ['ids' => ['U50Z5P']],
                         'filters' => new FilterByRouteNumber(['121'])
-                    ],
+                    ],*/
                     [
                         'name' => 'Poliklinika Budějovická (L)',
                         'query' => ['ids' => ['U50Z6P']],
