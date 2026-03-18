@@ -128,6 +128,7 @@ class BoardsController extends AbstractController
                     ]
                 ];
             case 'from_work_maddz':
+                $trains = new FilterByRouteNumber(['S3', 'S30', 'S34', 'R21', 'R43', 'T3']);
                 return [
                     [
                         'name' => 'Novodvorská',
