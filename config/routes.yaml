@@ -4,11 +4,11 @@ index:
 
 stops:
   path: /stops
-  controller: App\Controller\IndexController::rawStops
+  controller: App\Controller\IndexController::stops
 
 departures:
   path: /departures
-  controller: App\Controller\IndexController::rawDepartures
+  controller: App\Controller\IndexController::departures
 
 boards:
   path: /board/{name}
@@ -17,3 +17,27 @@ boards:
     name: 'home'
   requirements:
     name: '\w+'
+
+api_boards:
+  path: /api/boards
+  controller: App\Controller\ApiController::boards
+  methods: [GET]
+
+api_board:
+  path: /api/board/{name}
+  controller: App\Controller\ApiController::board
+  defaults:
+    name: 'home'
+  requirements:
+    name: '\w+'
+  methods: [GET]
+
+api_stops:
+  path: /api/stops
+  controller: App\Controller\ApiController::stops
+  methods: [GET]
+
+api_departures:
+  path: /api/departures
+  controller: App\Controller\ApiController::departures
+  methods: [GET]

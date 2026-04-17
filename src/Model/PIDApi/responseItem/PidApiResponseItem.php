@@ -81,6 +81,22 @@ abstract class PidApiResponseItem implements PidApiResponseItemInterface
 
     public abstract function getMap(): array;
 
+    public function toArray(): array
+    {
+        $result = [];
+        foreach (array_keys($this->getMap()) as $key) {
+            $result[$key] = $this->__get($key);
+        }
+        foreach ($this->getTimeColumns() as $timeKey) {
+            foreach (['_ts', '_short', '_diff'] as $suffix) {
+                $derived = $timeKey . $suffix;
+                $result[$derived] = $this->__get($derived);
+            }
+        }
+
+        return $result;
+    }
+
     private function getDataItemByKey(string $key)
     {
         $map = $this->getMap();
