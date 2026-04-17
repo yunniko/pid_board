@@ -7,18 +7,30 @@ use App\Model\PIDApi\PidApi;
 use App\Model\PIDApi\request\PidApiDeparturesRequest;
 use App\Model\PIDApi\request\PidApiStopsRequest;
 use App\Service\BoardRegistry;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Throwable;
 
 class ApiController extends AbstractController
 {
     private BoardRegistry $registry;
+    private Board $board;
+    private PidApi $api;
+    private LoggerInterface $logger;
 
-    public function __construct(BoardRegistry $registry)
-    {
+    public function __construct(
+        BoardRegistry $registry,
+        Board $board,
+        PidApi $api,
+        ?LoggerInterface $logger = null
+    ) {
         $this->registry = $registry;
+        $this->board = $board;
+        $this->api = $api;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function boards(): JsonResponse
@@ -30,8 +42,7 @@ class ApiController extends AbstractController
     {
         $name = $request->attributes->get('_route_params')['name'] ?? '';
         $settings = $this->registry->getBoardSettings($name);
-        $board = new Board();
-        $data = $board->getData($settings);
+        $data = $this->board->getData($settings);
 
         return $this->json(array_map(static function (array $panel): array {
             return [
@@ -40,6 +51,7 @@ class ApiController extends AbstractController
                     static fn($item) => $item->toArray(),
                     $panel['departures']
                 )),
+                'error' => $panel['error'] ?? null,
             ];
         }, $data));
     }
@@ -58,15 +70,22 @@ class ApiController extends AbstractController
     {
         $names = $request->query->get('names');
         if (empty($names)) {
-            return [];
+            return ['data' => [], 'error' => null];
         }
-        $api = new PidApi(HttpClient::create([]));
         $apiRequest->names = explode(', ', $names);
-        $response = $api->get($apiRequest);
-
-        return array_values(array_map(
-            static fn($item) => $item->toArray(),
-            $response->getData()
-        ));
+        try {
+            $response = $this->api->get($apiRequest);
+            $data = array_values(array_map(
+                static fn($item) => $item->toArray(),
+                $response->getData()
+            ));
+            return ['data' => $data, 'error' => null];
+        } catch (Throwable $e) {
+            $this->logger->error('Raw search failed', [
+                'names' => $names,
+                'error' => $e->getMessage(),
+            ]);
+            return ['data' => [], 'error' => $e->getMessage()];
+        }
     }
 }

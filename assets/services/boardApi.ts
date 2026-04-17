@@ -16,11 +16,24 @@ async function getJson<T>(url: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+interface RawSearchEnvelope {
+  data: RawRecord[];
+  error: string | null;
+}
+
+async function getRaw(url: string): Promise<RawRecord[]> {
+  const envelope = await getJson<RawSearchEnvelope>(url);
+  if (envelope.error) {
+    throw new Error(envelope.error);
+  }
+  return envelope.data;
+}
+
 export const httpBoardApi: BoardApi = {
   getBoards: () => getJson<BoardNavEntry[]>('/api/boards'),
   getBoard: (name) => getJson<BoardResponse>(`/api/board/${encodeURIComponent(name)}`),
-  getStops: (names) => getJson<RawRecord[]>(`/api/stops?names=${encodeURIComponent(names)}`),
-  getDepartures: (names) => getJson<RawRecord[]>(`/api/departures?names=${encodeURIComponent(names)}`),
+  getStops: (names) => getRaw(`/api/stops?names=${encodeURIComponent(names)}`),
+  getDepartures: (names) => getRaw(`/api/departures?names=${encodeURIComponent(names)}`),
 };
 
 export const BoardApiKey: InjectionKey<BoardApi> = Symbol('BoardApi');

@@ -15,6 +15,7 @@ export interface Departure {
 export interface StopTimetable {
   stop: string;
   departures: Departure[];
+  error?: string | null;
 }
 
 export type BoardResponse = StopTimetable[];

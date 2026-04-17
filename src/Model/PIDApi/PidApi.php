@@ -5,6 +5,7 @@ namespace App\Model\PIDApi;
 use App\Model\PIDApi\interfaces\PidApiRequestInterface;
 use App\Model\PIDApi\interfaces\PidApiResponseInterface;
 use Exception;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 //https://api.golemio.cz/v2/pid/docs/openapi/#
@@ -37,18 +38,22 @@ class PidApi
     {
         $url = $this->makeUrl($data::getRoute());
         $queryString = $this->prepareQuery($data->toArray());
-        $response = $this->client->request(
-            'GET',
-            $url . '?' . $queryString,
-        );
-        $statusCode = $response->getStatusCode();
-        if ($statusCode === 404) {
-            $result = [];
-        } elseif($statusCode === 200) {
-            $result = $response->toArray();
-        } else {
-            $error = $response->toArray();
-            throw new Exception('CODE ' . $statusCode . ' (' . var_export($error) . ')');
+        try {
+            $response = $this->client->request(
+                'GET',
+                $url . '?' . $queryString,
+            );
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 404) {
+                $result = [];
+            } elseif ($statusCode === 200) {
+                $result = $response->toArray();
+            } else {
+                $error = $response->toArray(false);
+                throw new Exception('CODE ' . $statusCode . ' (' . var_export($error, true) . ')');
+            }
+        } catch (HttpClientExceptionInterface $e) {
+            throw new Exception('Golemio request failed: ' . $e->getMessage(), 0, $e);
         }
 
         return $data->makeResponse($result ?? []);

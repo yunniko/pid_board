@@ -4,8 +4,9 @@ namespace App\Model;
 
 use App\Model\PIDApi\PidApi;
 use App\Model\PIDApi\request\PidApiDeparturesRequest;
-use FilterInterface;
-use Symfony\Component\HttpClient\HttpClient;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Throwable;
 
 class Board
 {
@@ -16,11 +17,13 @@ class Board
         'limit' => 50
     ];
 
-    private $api;
+    private PidApi $api;
+    private LoggerInterface $logger;
 
-    public function __construct()
+    public function __construct(PidApi $api, ?LoggerInterface $logger = null)
     {
-        $this->api = new PidApi(HttpClient::create([]));
+        $this->api = $api;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function getData($settings)
@@ -31,15 +34,30 @@ class Board
             $query = $data['query'] ?? [];
             $filters = $data['filters'] ?? null;
             $name = $data['name'] ?? '';
-            $settingsObject = new PidApiDeparturesRequest(array_merge($defaults, $query));
-            $response = $this->api->get($settingsObject);
-            $departures = $response->getFilteredData($filters);
-            $departures = $this->filterByTime($departures, 'departure_predicted_ts', $data['past_count'] ?? 1,
-                $data['future_count'] ?? 5, $data['max_timerange_minutes'] ?? 90);
-            $result[] = [
+            $panel = [
                 'stop' => $name,
-                'departures' => $departures
+                'departures' => [],
+                'error' => null,
             ];
+            try {
+                $settingsObject = new PidApiDeparturesRequest(array_merge($defaults, $query));
+                $response = $this->api->get($settingsObject);
+                $departures = $response->getFilteredData($filters);
+                $panel['departures'] = $this->filterByTime(
+                    $departures,
+                    'departure_predicted_ts',
+                    $data['past_count'] ?? 1,
+                    $data['future_count'] ?? 5,
+                    $data['max_timerange_minutes'] ?? 90
+                );
+            } catch (Throwable $e) {
+                $this->logger->error('Board stop fetch failed', [
+                    'stop' => $name,
+                    'error' => $e->getMessage(),
+                ]);
+                $panel['error'] = $e->getMessage();
+            }
+            $result[] = $panel;
         }
 
         return $result;

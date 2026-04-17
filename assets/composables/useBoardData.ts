@@ -7,6 +7,7 @@ export interface BoardDataState {
   data: Ref<BoardResponse>;
   loading: Ref<boolean>;
   error: Ref<string | null>;
+  lastSuccessAt: Ref<number | null>;
   refresh: () => Promise<void>;
 }
 
@@ -19,12 +20,14 @@ export function useBoardData(boardName: string, refreshMs = 30_000): BoardDataSt
   const data = ref<BoardResponse>([]);
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
+  const lastSuccessAt = ref<number | null>(null);
 
   const refresh = async (): Promise<void> => {
     loading.value = true;
     try {
       data.value = await api.getBoard(boardName);
       error.value = null;
+      lastSuccessAt.value = Date.now();
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Unknown error';
     } finally {
@@ -35,5 +38,5 @@ export function useBoardData(boardName: string, refreshMs = 30_000): BoardDataSt
   void refresh();
   useAutoRefresh(refresh, { intervalMs: refreshMs });
 
-  return { data, loading, error, refresh };
+  return { data, loading, error, lastSuccessAt, refresh };
 }

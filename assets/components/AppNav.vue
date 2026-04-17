@@ -15,15 +15,12 @@ const currentPath = typeof window !== 'undefined'
   ? window.location.pathname + window.location.search
   : '';
 
-const links = computed(() => [
-  { href: '/', label: 'Index' },
-  ...boards.value.map((b) => ({
+const links = computed(() =>
+  boards.value.map((b) => ({
     href: b.slug === 'home' ? '/board' : `/board/${b.slug}`,
     label: b.label,
   })),
-  { href: '/stops', label: 'Raw stops' },
-  { href: '/departures', label: 'Raw departures' },
-]);
+);
 
 const isActive = (href: string): boolean => currentPath === href;
 

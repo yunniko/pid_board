@@ -27,7 +27,10 @@ const rows = computed<Row[]>(() => {
 
 <template>
   <div class="timetable-panel">
-    <div class="timetable-name">{{ timetable.stop }}</div>
+    <div class="timetable-name">
+      {{ timetable.stop }}
+      <span v-if="timetable.error" class="stop-error">(unavailable)</span>
+    </div>
     <div class="timetable-content">
       <DepartureRow
         v-for="(row, idx) in rows"
