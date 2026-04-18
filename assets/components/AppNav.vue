@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from 'vue';
 import { BoardApiKey } from '../services/boardApi';
+import { useCurrentPath } from '../composables/useCurrentPath';
 import type { BoardNavEntry } from '../types/departure';
 
 const STORAGE_KEY = 'nav-toggle-hidden';
@@ -8,12 +9,13 @@ const STORAGE_KEY = 'nav-toggle-hidden';
 const api = inject(BoardApiKey);
 if (!api) throw new Error('BoardApi not provided');
 
+const emit = defineEmits<{
+  (e: 'nav-click', payload: { event: MouseEvent; href: string }): void;
+}>();
+
 const boards = ref<BoardNavEntry[]>([]);
 const hidden = ref<boolean>(window.sessionStorage.getItem(STORAGE_KEY) === 'true');
-
-const currentPath = typeof window !== 'undefined'
-  ? window.location.pathname + window.location.search
-  : '';
+const currentPath = useCurrentPath();
 
 const links = computed(() =>
   boards.value.map((b) => ({
@@ -22,11 +24,15 @@ const links = computed(() =>
   })),
 );
 
-const isActive = (href: string): boolean => currentPath === href;
+const isActive = (href: string): boolean => currentPath.value === href;
 
 function toggle(): void {
   hidden.value = !hidden.value;
   window.sessionStorage.setItem(STORAGE_KEY, String(hidden.value));
+}
+
+function onNavClick(event: MouseEvent, href: string): void {
+  emit('nav-click', { event, href });
 }
 
 onMounted(async () => {
@@ -52,6 +58,7 @@ onMounted(async () => {
       class="nav"
       :class="{ active: isActive(link.href) }"
       :href="link.href"
+      @click="onNavClick($event, link.href)"
     >{{ link.label }}</a>
   </div>
 </template>

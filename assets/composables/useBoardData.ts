@@ -1,4 +1,4 @@
-import { inject, ref, type Ref } from 'vue';
+import { inject, ref, watch, type Ref } from 'vue';
 import { BoardApiKey } from '../services/boardApi';
 import type { BoardResponse } from '../types/departure';
 import { useAutoRefresh } from './useAutoRefresh';
@@ -11,7 +11,7 @@ export interface BoardDataState {
   refresh: () => Promise<void>;
 }
 
-export function useBoardData(boardName: string, refreshMs = 30_000): BoardDataState {
+export function useBoardData(boardName: Ref<string>, refreshMs = 30_000): BoardDataState {
   const api = inject(BoardApiKey);
   if (!api) {
     throw new Error('BoardApi not provided');
@@ -25,7 +25,7 @@ export function useBoardData(boardName: string, refreshMs = 30_000): BoardDataSt
   const refresh = async (): Promise<void> => {
     loading.value = true;
     try {
-      data.value = await api.getBoard(boardName);
+      data.value = await api.getBoard(boardName.value);
       error.value = null;
       lastSuccessAt.value = Date.now();
     } catch (err) {
@@ -36,6 +36,12 @@ export function useBoardData(boardName: string, refreshMs = 30_000): BoardDataSt
   };
 
   void refresh();
+  watch(boardName, () => {
+    data.value = [];
+    error.value = null;
+    lastSuccessAt.value = null;
+    void refresh();
+  });
   useAutoRefresh(refresh, { intervalMs: refreshMs });
 
   return { data, loading, error, lastSuccessAt, refresh };
