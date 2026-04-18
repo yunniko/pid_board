@@ -19,13 +19,17 @@ const menuOpen = ref<boolean>(false);
 const currentPath = useCurrentPath();
 
 const links = computed(() =>
-  boards.value.map((b) => ({
+  boards.value.map((b, idx) => ({
     href: b.slug === 'home' ? '/board' : `/board/${b.slug}`,
     label: b.label,
+    order: idx,
   })),
 );
 
 const isActive = (href: string): boolean => currentPath.value === href;
+
+const activeLink = computed(() => links.value.find((l) => isActive(l.href)) ?? null);
+const inactiveLinks = computed(() => links.value.filter((l) => !isActive(l.href)));
 
 function toggle(): void {
   hidden.value = !hidden.value;
@@ -59,13 +63,12 @@ onMounted(async () => {
       </slot>
     </div>
     <a
-      v-for="link in links"
-      :key="link.href"
-      class="nav"
-      :class="{ active: isActive(link.href) }"
-      :href="link.href"
-      @click="onNavClick($event, link.href)"
-    >{{ link.label }}</a>
+      v-if="activeLink"
+      class="nav active"
+      :style="{ order: activeLink!.order }"
+      :href="activeLink!.href"
+      @click="onNavClick($event, activeLink!.href)"
+    >{{ activeLink!.label }}</a>
     <div
       class="nav-menu-button"
       :class="{ open: menuOpen }"
@@ -74,5 +77,15 @@ onMounted(async () => {
       role="button"
       @click="toggleMenu"
     ></div>
+    <div class="nav-links">
+      <a
+        v-for="link in inactiveLinks"
+        :key="link.href"
+        class="nav"
+        :style="{ order: link.order }"
+        :href="link.href"
+        @click="onNavClick($event, link.href)"
+      >{{ link.label }}</a>
+    </div>
   </div>
 </template>
