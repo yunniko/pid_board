@@ -56,6 +56,31 @@
     color: white;
   }
 
+  .nav-menu-button {
+    display: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    align-self: center;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: @accentColor;
+      box-shadow:
+        0 -7px 0 @accentColor,
+        0 7px 0 @accentColor;
+    }
+
+    &:hover::before {
+      background: @mainColor;
+      box-shadow:
+        0 -7px 0 @mainColor,
+        0 7px 0 @mainColor;
+    }
+  }
+
   &.hidden {
     * {
       display: none;
@@ -63,6 +88,26 @@
 
     .nav-toggle {
       display: block;
+    }
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .nav-container:not(.hidden) {
+    .nav-menu-button {
+      display: block;
+      order: 99;
+    }
+
+    .nav:not(.active) {
+      display: none;
+    }
+
+    &.menu-open .nav:not(.active) {
+      display: block;
+      flex: 0 0 100%;
+      border-left: none;
+      border-top: 1px solid @secondaryColor;
     }
   }
 }

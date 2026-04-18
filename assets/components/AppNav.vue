@@ -15,6 +15,7 @@ const emit = defineEmits<{
 
 const boards = ref<BoardNavEntry[]>([]);
 const hidden = ref<boolean>(window.sessionStorage.getItem(STORAGE_KEY) === 'true');
+const menuOpen = ref<boolean>(false);
 const currentPath = useCurrentPath();
 
 const links = computed(() =>
@@ -31,8 +32,13 @@ function toggle(): void {
   window.sessionStorage.setItem(STORAGE_KEY, String(hidden.value));
 }
 
+function toggleMenu(): void {
+  menuOpen.value = !menuOpen.value;
+}
+
 function onNavClick(event: MouseEvent, href: string): void {
   emit('nav-click', { event, href });
+  menuOpen.value = false;
 }
 
 onMounted(async () => {
@@ -45,7 +51,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="nav-container" :class="{ hidden }">
+  <div class="nav-container" :class="{ hidden, 'menu-open': menuOpen }">
     <div class="nav-toggle" @click="toggle"></div>
     <div class="nav-header">
       <slot name="header">
@@ -60,5 +66,13 @@ onMounted(async () => {
       :href="link.href"
       @click="onNavClick($event, link.href)"
     >{{ link.label }}</a>
+    <div
+      class="nav-menu-button"
+      :class="{ open: menuOpen }"
+      :aria-expanded="menuOpen"
+      aria-label="Toggle navigation menu"
+      role="button"
+      @click="toggleMenu"
+    ></div>
   </div>
 </template>
