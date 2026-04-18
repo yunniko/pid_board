@@ -62,21 +62,23 @@ onMounted(async () => {
         <a href="/">PID boards</a>
       </slot>
     </div>
-    <a
-      v-if="activeLink"
-      class="nav active"
-      :style="{ order: activeLink!.order }"
-      :href="activeLink!.href"
-      @click="onNavClick($event, activeLink!.href)"
-    >{{ activeLink!.label }}</a>
-    <div
-      class="nav-menu-button"
-      :class="{ open: menuOpen }"
-      :aria-expanded="menuOpen"
-      aria-label="Toggle navigation menu"
-      role="button"
-      @click="toggleMenu"
-    ></div>
+    <div class="nav-active-group">
+      <a
+        v-if="activeLink"
+        class="nav active"
+        :style="{ order: activeLink!.order }"
+        :href="activeLink!.href"
+        @click="onNavClick($event, activeLink!.href)"
+      >{{ activeLink!.label }}</a>
+      <div
+        class="nav-menu-button"
+        :class="{ open: menuOpen }"
+        :aria-expanded="menuOpen"
+        aria-label="Toggle navigation menu"
+        role="button"
+        @click="toggleMenu"
+      ></div>
+    </div>
     <div class="nav-links">
       <a
         v-for="link in inactiveLinks"
