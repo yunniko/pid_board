@@ -3,7 +3,7 @@
 Configurable public-transport departure boards for Prague (PID), backed by the
 [Golemio v2 API](https://api.golemio.cz/v2/pid/docs/openapi/). Define a board
 once in PHP and it appears in the nav and renders live departures — no frontend
-changes required.
+changes required. The working app is at https://pid.app.julienika.cz/board page
 
 **Stack:** Symfony 5.4 (PHP ≥ 7.2.5) · Vue 3 + TypeScript · Webpack Encore (Less, Vue loader, ts-loader)
 
